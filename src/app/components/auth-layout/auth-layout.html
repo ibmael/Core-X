@@ -1,1 +1,62 @@
-<p>auth-layout works!</p>
+<section class="min-h-screen flex w-full">
+  <div
+    class="w-1/2 min-h-screen relative p-8 lg:p-16 login-left-side flex flex-col justify-start overflow-hidden"
+  >
+    <div class="w-fit flex items-center">
+      <img src="./icons/folder-code.svg" class="w-[40px] h-[40px]" alt="web icon" />
+      <h3 class="text-[20px] text-primary font-geist font-[600]">Exam App</h3>
+    </div>
+
+    <h1 class="text-[30px] text-[#1F2937] font-[700] mt-[100px] mb-[60px] max-w-[458px] font-inter">
+      Empower your learning journey with our smart exam platform.
+    </h1>
+
+    <div class="flex flex-col gap-6">
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/brain.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="rocket icon"
+        />
+        <div>
+          <h2 class="text-[20px] font-[600] mb-[10px]">Tailored Diplomas</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Choose from specialized tracks like Frontend, Backend, and Mobile Development.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/book-open-check.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="book icon"
+        />
+        <div>
+          <h2 class="text-[20px] font-[600] mb-[10px]">Focused Exams</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Access topic-specific tests including HTML, CSS, JavaScript, and more.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/rectangle-ellipsis.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="rectangle icon"
+        />
+        <div>
+          <h2 class="text-[20px] font-[600] mb-[10px]">Smart Multi-Step Forms</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Simplify your exam process with our smart multi-step forms.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-1/2 min-h-screen bg-white flex items-center justify-center">
+    <router-outlet />
+  </div>
+</section>
