@@ -1,0 +1,125 @@
+<section class="min-h-screen flex w-full">
+  <!-- left side -->
+  <div
+    class="w-1/2 min-h-screen relative p-8 lg:p-16 login-left-side flex flex-col justify-start overflow-hidden"
+  >
+    <!-- web title -->
+    <div class="w-fit flex items-center">
+      <img src="./icons/folder-code.svg" class="w-[40px] h-[40px]" alt="web icon" />
+      <h3 class="text-[20px] text-primary font-geist font-[600]">Exam App</h3>
+    </div>
+    <!-- web head h1 -->
+    <h1 class="text-[30px] text-[#1F2937] font-[700] mt-[100px] mb-[60px] max-w-[458px] font-inter">
+      Empower your learning journey with our smart exam platform.
+    </h1>
+    <!-- intro coulms  -->
+    <div class="flex flex-col gap-6">
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/brain.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="rocket icon"
+        />
+        <!-- caption -->
+        <div class="">
+          <h2 class="text-[20px] font-[600] mb-[10px]">Tailored Diplomas</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Choose from specialized tracks like Frontend, Backend, and Mobile Development.
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/book-open-check.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="book icon"
+        />
+        <!-- caption -->
+        <div class="">
+          <h2 class="text-[20px] font-[600] mb-[10px]">Focused Exams</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Access topic-specific tests including HTML, CSS, JavaScript, and more.
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-3 items-start">
+        <img
+          src="./icons/rectangle-ellipsis.svg"
+          class="border p-[4px] border-[#155DFC] border-[1.5px]"
+          alt="rectangle icon"
+        />
+        <!-- caption -->
+        <div class="">
+          <h2 class="text-[20px] font-[600] mb-[10px]">Smart Multi-Step Forms</h2>
+          <p class="text-[16px] font-[400] text-[#374151]">
+            Simplify your exam process with our smart multi-step forms.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- right side -->
+  <div class="relative w-1/2 bg-white">
+    <div class="">
+      <div class="flex items-center min-h-screen justify-center bg-white">
+        <div class="w-full max-w-sm flex flex-col gap-6">
+          <h2 class="text-[30px] font-[700] text-[#1F2937] mb-2">Login</h2>
+
+          <form class="flex flex-col gap-3">
+            <div class="flex flex-col gap-2">
+              <label for="username" class="text-[16px] font-[500] text-slate-700 font-geist"
+                >Username</label
+              >
+              <input
+                pInputText
+                id="username"
+                name="username"
+                [(ngModel)]="usernameValue"
+                placeholder="user123"
+                class="w-full p-3 border border-slate-300 rounded-[0px]! focus:border-primary! focus:ring-1 focus:ring-primary! outline-hidden"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="password" class="text-[16px] font-[500] text-slate-700 font-geist"
+                >Password</label
+              >
+              <p-password
+                id="password"
+                name="password"
+                [(ngModel)]="passwordValue"
+                [toggleMask]="true"
+                [feedback]="false"
+                placeholder="********"
+                styleClass="w-full"
+                inputStyleClass="w-full p-3 border border-slate-300 rounded-[0px]! focus:border-primary! focus:ring-1 focus:ring-primary! outline-hidden"
+              ></p-password>
+            </div>
+
+            <div class="text-right">
+              <a href="#" class="text-[14px] text-primary hover:underline font-[500] font-geist">
+                Forgot your password?
+              </a>
+            </div>
+
+            <button
+              pButton
+              type="submit"
+              label="Login"
+              class="w-full rounded-[0px]! bg-primary! hover:bg-blue-700 font-[500]! text-[14px]! font-geist! justify-center transition-all duration-200 cursor-pointer shadow-sm"
+            >
+              Login
+            </button>
+
+            <p class="text-[14px] text-center font-geist text-[#6b7280] font-medium mt-2">
+              Don't have an account?
+              <a href="#" class="text-primary text-[14px] font-geist font-semibold hover:underline"
+                >Create yours</a
+              >
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

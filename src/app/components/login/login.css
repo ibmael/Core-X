@@ -1,0 +1,21 @@
+.login-left-side {
+  background-color: #edf3fc;
+  background-image:
+    radial-gradient(ellipse 100% 85% at 88% 92%, rgba(186, 210, 249, 0.65) 0%, transparent 55%),
+    radial-gradient(ellipse 75% 55% at 8% 12%, rgba(245, 249, 255, 0.9) 0%, transparent 50%),
+    linear-gradient(145deg, #f0f7ff 0%, #e8f1fd 45%, #d9eaff 100%);
+}
+
+.login-left-side h2 {
+  font-family: var(--font-geist);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.login-left-side p {
+  font-family: var(--font-geist);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #475569;
+}
