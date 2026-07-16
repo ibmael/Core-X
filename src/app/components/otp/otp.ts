@@ -4,12 +4,13 @@ import { RouterLink } from '@angular/router';
 import { SharedSteps } from '../../shared/components/shared-steps/shared-steps';
 import { AuthErrorBanner } from '../../shared/components/auth-error-banner/auth-error-banner';
 import { SharedButton } from '../../shared/components/shared-button/shared-button';
+import { AuthHeader } from '../../shared/components/auth-header/auth-header';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-otp',
   standalone: true,
-  imports: [CommonModule, SharedOtp, RouterLink, SharedSteps, AuthErrorBanner, SharedButton],
+  imports: [CommonModule, SharedOtp, RouterLink, SharedSteps, AuthErrorBanner, SharedButton, AuthHeader],
   templateUrl: './otp.html',
   styleUrl: './otp.css',
 })

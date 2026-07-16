@@ -1,24 +1,28 @@
-<div class="flex items-center w-full min-h-screen justify-center bg-white p-6 sm:p-8 lg:p-12">
+<div class="flex items-center w-full h-screen overflow-y-auto justify-center bg-white p-6 sm:p-8 lg:p-12">
   <div class="auth-form flex flex-col gap-6">
     <app-shared-steps [totalSteps]="4" [currentStep]="2" />
 
     <app-auth-header title="Create Account" subtitle="Tell us more about you" />
 
     <div class="flex flex-col gap-5 w-full">
-      <app-shared-input
-        id="firstName"
-        label="First name"
-        placeholder="Ahmed"
-        [hasError]="true"
-        errorMessage="Your first name is required"
-      />
-      <app-shared-input
-        id="lastName"
-        label="Last name"
-        placeholder="Abdullah"
-        [hasError]="true"
-        errorMessage="Your last name is required"
-      />
+      <div class="flex gap-4 w-full">
+        <app-shared-input
+          class="flex-1 min-w-0"
+          id="firstName"
+          label="First name"
+          placeholder="Ahmed"
+          [hasError]="true"
+          errorMessage="Your first name is required"
+        />
+        <app-shared-input
+          class="flex-1 min-w-0"
+          id="lastName"
+          label="Last name"
+          placeholder="Abdullah"
+          [hasError]="true"
+          errorMessage="Your last name is required"
+        />
+      </div>
 
       <app-shared-input
         id="username"

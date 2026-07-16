@@ -10,14 +10,7 @@ import { SharedButton } from '../../shared/components/shared-button/shared-butto
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    SharedInput,
-    AuthHeader,
-    AuthErrorBanner,
-    SharedButton,
-  ],
+  imports: [CommonModule, RouterLink, SharedInput, AuthHeader, AuthErrorBanner, SharedButton],
   templateUrl: './forget-password.html',
   styleUrl: './forget-password.css',
 })
