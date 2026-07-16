@@ -1,13 +1,16 @@
 <section class="min-h-screen flex w-full">
+  <!-- left side: hidden on mobile -->
   <div
-    class="w-1/2 min-h-screen relative p-8 lg:p-16 login-left-side flex flex-col justify-start overflow-hidden"
+    class="hidden lg:flex w-1/2 min-h-screen relative p-8 xl:p-16 login-left-side flex-col justify-start overflow-hidden"
   >
-    <div class="w-fit flex items-center">
-      <img src="./icons/folder-code.svg" class="w-[40px] h-[40px]" alt="web icon" />
+    <div class="w-fit flex items-center gap-2">
+      <img src="./icons/folder-code.svg" class="w-[40px] h-[40px]" alt="Exam App icon" />
       <h3 class="text-[20px] text-primary font-geist font-[600]">Exam App</h3>
     </div>
 
-    <h1 class="text-[30px] text-[#1F2937] font-[700] mt-[100px] mb-[60px] max-w-[458px] font-inter">
+    <h1
+      class="text-[26px] xl:text-[30px] text-[#1F2937] font-[700] mt-[80px] xl:mt-[100px] mb-[48px] xl:mb-[60px] max-w-[458px] font-inter"
+    >
       Empower your learning journey with our smart exam platform.
     </h1>
 
@@ -15,12 +18,12 @@
       <div class="flex gap-3 items-start">
         <img
           src="./icons/brain.svg"
-          class="border p-[4px] border-[#155DFC] border-[1.5px]"
-          alt="rocket icon"
+          class="border p-[4px] border-[#155DFC] border-[1.5px] shrink-0"
+          alt=""
         />
         <div>
-          <h2 class="text-[20px] font-[600] mb-[10px]">Tailored Diplomas</h2>
-          <p class="text-[16px] font-[400] text-[#374151]">
+          <h2 class="text-[18px] xl:text-[20px] font-[600] mb-[10px]">Tailored Diplomas</h2>
+          <p class="text-[14px] xl:text-[16px] font-[400] text-[#374151]">
             Choose from specialized tracks like Frontend, Backend, and Mobile Development.
           </p>
         </div>
@@ -29,12 +32,12 @@
       <div class="flex gap-3 items-start">
         <img
           src="./icons/book-open-check.svg"
-          class="border p-[4px] border-[#155DFC] border-[1.5px]"
-          alt="book icon"
+          class="border p-[4px] border-[#155DFC] border-[1.5px] shrink-0"
+          alt=""
         />
         <div>
-          <h2 class="text-[20px] font-[600] mb-[10px]">Focused Exams</h2>
-          <p class="text-[16px] font-[400] text-[#374151]">
+          <h2 class="text-[18px] xl:text-[20px] font-[600] mb-[10px]">Focused Exams</h2>
+          <p class="text-[14px] xl:text-[16px] font-[400] text-[#374151]">
             Access topic-specific tests including HTML, CSS, JavaScript, and more.
           </p>
         </div>
@@ -43,12 +46,12 @@
       <div class="flex gap-3 items-start">
         <img
           src="./icons/rectangle-ellipsis.svg"
-          class="border p-[4px] border-[#155DFC] border-[1.5px]"
-          alt="rectangle icon"
+          class="border p-[4px] border-[#155DFC] border-[1.5px] shrink-0"
+          alt=""
         />
         <div>
-          <h2 class="text-[20px] font-[600] mb-[10px]">Smart Multi-Step Forms</h2>
-          <p class="text-[16px] font-[400] text-[#374151]">
+          <h2 class="text-[18px] xl:text-[20px] font-[600] mb-[10px]">Smart Multi-Step Forms</h2>
+          <p class="text-[14px] xl:text-[16px] font-[400] text-[#374151]">
             Simplify your exam process with our smart multi-step forms.
           </p>
         </div>
@@ -56,7 +59,8 @@
     </div>
   </div>
 
-  <div class="w-1/2 min-h-screen bg-white flex items-center justify-center">
+  <!-- right side: full width on mobile; pages handle their own vertical centering -->
+  <div class="auth-right w-full lg:w-1/2 min-h-screen bg-white">
     <router-outlet />
   </div>
 </section>

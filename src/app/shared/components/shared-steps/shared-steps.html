@@ -1,28 +1,22 @@
-<div class="flex items-center justify-between w-full mb-6 select-none relative">
+<div class="shared-steps flex items-center w-full mb-6 select-none">
   @for (index of stepsArray; track index; let last = $last) {
-    <div class="relative flex items-center justify-center shrink-0 z-10">
+    <div class="shared-steps__marker shrink-0 flex items-center justify-center z-10">
       @if (index < currentStep) {
-        <div class="w-3 h-3 bg-primary transform rotate-45 transition-all duration-300"></div>
+        <span class="shared-steps__diamond shared-steps__diamond--filled"></span>
       } @else if (index === currentStep) {
-        <div
-          class="relative flex items-center justify-center w-6 h-6 bg-blue-50 border border-blue-300/80 transform rotate-45 shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-pulse transition-all duration-300"
-        >
-          <div class="w-2.5 h-2.5 bg-primary"></div>
-        </div>
+        <span class="shared-steps__halo">
+          <span class="shared-steps__diamond shared-steps__diamond--filled"></span>
+        </span>
       } @else {
-        <div
-          class="w-3 h-3 border-2 border-blue-200 bg-white transform rotate-45 transition-all duration-300"
-        ></div>
+        <span class="shared-steps__diamond shared-steps__diamond--outlined"></span>
       }
     </div>
 
     @if (!last) {
       <div
-        [ngClass]="{
-          'border-t-2 border-primary': index < currentStep,
-          'border-t-2 border-dashed border-blue-200': index >= currentStep,
-        }"
-        class="flex-1 h-0 mx-[-2px] transition-all duration-300 z-0"
+        class="shared-steps__line flex-1"
+        [class.shared-steps__line--solid]="index < currentStep"
+        [class.shared-steps__line--dashed]="index >= currentStep"
       ></div>
     }
   }

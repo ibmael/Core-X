@@ -1,9 +1,10 @@
-<div class="flex items-center w-full min-h-screen justify-center bg-white p-8 lg:p-12">
-  <div class="w-full max-w-[500px]! flex flex-col gap-6">
+<div class="flex items-center w-full min-h-screen justify-center bg-white p-6 sm:p-8 lg:p-12">
+  <div class="auth-form flex flex-col gap-6">
     <app-shared-steps [totalSteps]="4" [currentStep]="1" />
+
     <div class="flex flex-col gap-1">
-      <h2 class="text-[28px] font-[700] text-slate-800 font-geist">Create Account</h2>
-      <h3 class="text-[20px] font-[700] text-primary font-geist">Verify OTP</h3>
+      <h2 class="text-[26px] sm:text-[28px] font-[700] text-slate-800">Create Account</h2>
+      <h3 class="text-[18px] sm:text-[20px] font-[700] text-primary font-geist">Verify OTP</h3>
       <p class="text-[14px] text-slate-500 font-geist leading-relaxed">
         Please enter the 6-digits code we have sent to: <br />
         <span class="text-slate-800 font-[500]">user&#64;example.com.</span>
@@ -15,19 +16,26 @@
       </p>
     </div>
 
-    <form class="flex flex-col gap-6">
-      <app-shared-otp [length]="6" [(value)]="otpValue" />
+    <div class="flex flex-col gap-6">
+      <app-shared-otp [length]="6" [hasError]="true" />
+
+      <p class="text-[13px] text-[#ef4444] font-geist text-center -mt-3">
+        Please enter the 6-digit code
+      </p>
 
       <p class="text-[13px] text-center text-slate-500 font-geist">
         You can request another code in: <span class="font-[600] text-slate-700">60s</span>
       </p>
 
-      <button
-        type="submit"
-        class="w-full py-3 bg-[#EFF6FF] text-primary font-[500] border border-[#BFDBFE] hover:bg-[#DBEAFE] transition-colors font-geist cursor-pointer"
-      >
-        Verify Code
-      </button>
-    </form>
+      <app-auth-error-banner />
+
+      <a routerLink="/auth/register-info" class="block w-full">
+        <app-shared-button
+          label="Verify Code"
+          type="button"
+          bgClass="bg-[#EFF6FF]! text-primary! border border-[#BFDBFE]! hover:bg-[#DBEAFE]!"
+        />
+      </a>
+    </div>
   </div>
 </div>

@@ -1,14 +1,23 @@
-<div class="flex flex-col gap-2 w-full">
-  <label [for]="id" class="text-[16px] font-[500] text-slate-700 font-geist">
+<div class="flex flex-col gap-2 w-full max-w-full">
+  <label [for]="id" class="text-[15px] font-[600] text-[#1f2937] font-geist">
     {{ label }}
   </label>
 
   <input
-    pInputText
     [id]="id"
     [type]="type"
     [placeholder]="placeholder"
-    [formControl]="control"
-    class="w-full p-4 border border-slate-300 rounded-[0px]! focus:border-primary! focus:ring-1 focus:ring-primary! outline-hidden"
+    [attr.aria-invalid]="hasError"
+    [attr.size]="null"
+    [class]="
+      'auth-input h-12 px-4 border outline-hidden font-geist text-[14px] placeholder:text-[#c0c6d0] bg-white transition-colors ' +
+      (hasError
+        ? 'border-[#f87171] focus:border-[#f87171] focus:ring-1 focus:ring-[#fca5a5]'
+        : 'border-[#d1d5db] focus:border-primary focus:ring-1 focus:ring-primary')
+    "
   />
+
+  @if (hasError && errorMessage) {
+    <p class="text-[13px] text-[#ef4444] font-geist leading-tight">{{ errorMessage }}</p>
+  }
 </div>

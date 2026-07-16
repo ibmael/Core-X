@@ -24,13 +24,35 @@ export const routes: Routes = [
         loadComponent: () => import('./components/register/register').then((m) => m.Register),
       },
       {
+        path: 'otp',
+        loadComponent: () => import('./components/otp/otp').then((m) => m.OTP),
+      },
+      {
+        path: 'register-info',
+        loadComponent: () =>
+          import('./components/register-info/register-info').then((m) => m.RegisterInfo),
+      },
+      {
+        path: 'register-password',
+        loadComponent: () =>
+          import('./components/register-password/register-password').then(
+            (m) => m.RegisterPassword,
+          ),
+      },
+      {
         path: 'forget-password',
         loadComponent: () =>
           import('./components/forget-password/forget-password').then((m) => m.ForgetPassword),
       },
       {
-        path: 'otp',
-        loadComponent: () => import('./components/otp/otp').then((m) => m.OTP),
+        path: 'password-reset',
+        loadComponent: () =>
+          import('./components/password-reset/password-reset').then((m) => m.PasswordReset),
+      },
+      {
+        path: 'new-password',
+        loadComponent: () =>
+          import('./components/new-password/new-password').then((m) => m.NewPassword),
       },
     ],
   },

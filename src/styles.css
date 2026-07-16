@@ -13,3 +13,38 @@
 body {
   font-family: var(--font-inter);
 }
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/*
+  Routed auth pages are inserted NEXT TO <router-outlet>.
+  Angular view encapsulation blocks auth-layout.css from styling those hosts,
+  so this rule must live in global styles.
+
+  Without width: 100%, the page host shrink-wraps to the browser's default
+  <input size="20"> width — which is why fields looked uneven / too narrow.
+*/
+.auth-right > *:not(router-outlet) {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+}
+
+.auth-input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
