@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 
-@Component({
-  selector: 'lib-auth',
-  imports: [],
-  template: ` <p>auth works!</p> `,
-  styles: ``,
-})
-export class Auth {}
+import { API_URL } from './tokens/api-url.token';
+
+export interface AuthConfig {
+  apiUrl: string;
+}
+
+export function provideAuth(config: AuthConfig): EnvironmentProviders {
+  return makeEnvironmentProviders([{ provide: API_URL, useValue: config.apiUrl }]);
+}
