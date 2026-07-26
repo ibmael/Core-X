@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@import 'ngx-toastr/toastr';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 @theme {
   --font-inter: 'Inter', sans-serif;
@@ -18,6 +20,57 @@ html,
 body {
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* ─── Custom Toastr Styling (Matching Figma / Design Mockup) ─────────────── */
+#toast-container.toast-bottom-right {
+  bottom: 24px !important;
+  right: 24px !important;
+}
+
+#toast-container > div.ngx-toastr {
+  background-color: #1e293b !important;
+  background-image: none !important;
+  color: #f8fafc !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 14px 20px 14px 44px !important;
+  opacity: 0.98 !important;
+  font-family: var(--font-inter), sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  width: auto !important;
+  min-width: 280px !important;
+  max-width: 420px !important;
+  position: relative !important;
+}
+
+#toast-container > div.ngx-toastr::before {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  line-height: 1 !important;
+}
+
+#toast-container > div.toast-success::before {
+  content: '\f058' !important;
+  color: #10b981 !important;
+}
+
+#toast-container > div.toast-error::before {
+  content: '\f057' !important;
+  color: #ef4444 !important;
+}
+
+#toast-container > div.toast-info::before {
+  content: '\f05a' !important;
+  color: #3b82f6 !important;
 }
 
 /*
