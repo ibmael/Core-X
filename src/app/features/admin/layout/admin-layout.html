@@ -1,0 +1,82 @@
+<div class="flex h-screen w-full overflow-hidden bg-[#f8fafc]">
+  <!-- Admin Sidebar -->
+  <aside class="w-[260px] shrink-0 bg-[#0F172A] text-white flex flex-col justify-between p-6 z-20 shadow-xl">
+    <div>
+      <!-- Brand Logo -->
+      <div class="flex flex-col gap-1 mb-8">
+        <div class="flex items-center gap-2">
+          <h1 class="text-[22px] font-[900] tracking-wider text-white uppercase font-geist">ELEVATE</h1>
+          <span class="bg-[#155DFC] text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wide">Admin</span>
+        </div>
+        <p class="text-[12px] text-[#94A3B8]">Management Portal</p>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-1.5">
+        @for (item of adminNavItems; track item.label) {
+          @if (item.active) {
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="bg-[#1E293B] text-[#38BDF8] border-l-4 border-[#155DFC] font-[600]"
+              class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-[14px] text-[#94A3B8] hover:bg-[#1E293B] hover:text-white transition-all cursor-pointer"
+            >
+              <i class="fa-solid {{ item.icon }} text-[16px] w-5 text-center"></i>
+              <span>{{ item.label }}</span>
+            </a>
+          } @else {
+            <div
+              class="flex items-center justify-between px-4 py-3 rounded-lg text-[14px] text-[#475569] cursor-not-allowed opacity-60"
+              title="Coming Soon"
+            >
+              <div class="flex items-center gap-3">
+                <i class="fa-solid {{ item.icon }} text-[16px] w-5 text-center"></i>
+                <span>{{ item.label }}</span>
+              </div>
+              <span class="text-[10px] uppercase font-bold bg-[#1E293B] text-[#64748B] px-1.5 py-0.5 rounded">Soon</span>
+            </div>
+          }
+        }
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Action & User -->
+    <div class="flex flex-col gap-3 pt-4 border-t border-[#1E293B]">
+      <a
+        routerLink="/dashboard"
+        class="flex items-center gap-2 text-[13px] font-[500] text-[#94A3B8] hover:text-white px-2 py-1.5 rounded hover:bg-[#1E293B] transition-colors cursor-pointer"
+      >
+        <i class="fa-solid fa-arrow-left text-[12px]"></i>
+        <span>Back to Student App</span>
+      </a>
+
+      <div class="flex items-center justify-between pt-2">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-full bg-[#155DFC] text-white flex items-center justify-center font-bold text-[13px] shrink-0">
+            {{ getUserInitials() }}
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[13px] font-[600] text-white truncate">
+              {{ currentUser()?.firstName || 'Admin' }}
+            </span>
+            <span class="text-[11px] text-[#94A3B8] truncate">
+              {{ currentUser()?.email || 'admin@elevate.com' }}
+            </span>
+          </div>
+        </div>
+
+        <button
+          (click)="logout()"
+          title="Logout"
+          class="text-[#94A3B8] hover:text-[#EF4444] p-1.5 rounded hover:bg-[#1E293B] transition-colors cursor-pointer shrink-0"
+        >
+          <i class="fa-solid fa-right-from-bracket text-[14px]"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-y-auto bg-[#F8FAFC]">
+    <router-outlet></router-outlet>
+  </main>
+</div>

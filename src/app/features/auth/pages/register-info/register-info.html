@@ -1,0 +1,53 @@
+<div class="flex items-center w-full h-screen overflow-y-auto justify-center bg-white p-6 sm:p-8 lg:p-12">
+  <div class="auth-form flex flex-col gap-6">
+    <app-shared-steps [totalSteps]="4" [currentStep]="2" />
+
+    <app-auth-header title="Create Account" subtitle="Tell us more about you" />
+
+    <form [formGroup]="infoForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5 w-full">
+      <div class="flex gap-4 w-full">
+        <app-shared-input
+          class="flex-1 min-w-0"
+          id="firstName"
+          label="First name"
+          placeholder="Ahmed"
+          formControlName="firstName"
+          [hasError]="!!(firstNameControl?.touched && firstNameControl?.invalid)"
+          errorMessage="Your first name is required"
+        />
+        <app-shared-input
+          class="flex-1 min-w-0"
+          id="lastName"
+          label="Last name"
+          placeholder="Abdullah"
+          formControlName="lastName"
+          [hasError]="!!(lastNameControl?.touched && lastNameControl?.invalid)"
+          errorMessage="Your last name is required"
+        />
+      </div>
+
+      <app-shared-input
+        id="username"
+        label="Username"
+        placeholder="user123"
+        formControlName="username"
+        [hasError]="!!(usernameControl?.touched && usernameControl?.invalid)"
+        errorMessage="Your username is required"
+      />
+
+      <app-shared-input
+        id="phone"
+        label="Phone"
+        placeholder="1012345678"
+        type="tel"
+        formControlName="phone"
+        [hasError]="!!(phoneControl?.touched && phoneControl?.invalid)"
+        errorMessage="Your phone is required"
+      />
+
+      <app-auth-error-banner [message]="errorMessage" />
+
+      <app-shared-button label="Next >" type="submit" class="mt-2" />
+    </form>
+  </div>
+</div>

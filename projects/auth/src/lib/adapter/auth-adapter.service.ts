@@ -12,7 +12,13 @@ export class AuthAdapterService implements Adaptor<AuthResponse, AuthUser> {
   constructor(private authService: AuthService) {}
 
   adapt(response: AuthResponse): AuthUser {
-    this.authService.storeToken(response.token);
-    return response.user;
+    const token = response?.payload?.token || response?.token;
+
+    if (token && typeof token === 'string' && token.trim() !== '') {
+      this.authService.storeToken(token.trim());
+    }
+
+    const user = response?.payload?.user || response?.user;
+    return user as AuthUser;
   }
 }

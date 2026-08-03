@@ -21,6 +21,7 @@ export * from './lib/models/responses/auth-user.response';
 export * from './lib/models/responses/otp.response';
 export * from './lib/models/responses/message.response';
 export * from './lib/models/responses/forgot-password.response';
+export * from './lib/models/responses/profile.response';
 
 // ─── Models — Enums ──────────────────────────────────────────────────────────
 export * from './lib/models/enums/role.enum';

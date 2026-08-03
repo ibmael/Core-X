@@ -1,13 +1,9 @@
 <div class="flex justify-center my-2 w-full">
   <p-inputotp
-    [(ngModel)]="value"
+    [ngModel]="value"
+    (ngModelChange)="onModelChange($event)"
     [length]="length"
     [integerOnly]="true"
-    [class]="
-      'flex w-full gap-2 sm:gap-3 *:flex-1 *:aspect-square **:text-xl! sm:**:text-2xl! **:font-bold! **:text-center! **:border! **:rounded-[0px]! **:outline-hidden! ' +
-      (hasError
-        ? '**:border-[#f87171]! focus-within:**:border-[#f87171]!'
-        : '**:border-slate-300! focus-within:**:border-primary! focus-within:**:border-2!')
-    "
+    [class]="'flex w-full gap-2 sm:gap-3 ' + (hasError ? 'otp-error' : 'otp-normal')"
   />
 </div>

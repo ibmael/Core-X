@@ -1,0 +1,348 @@
+<div class="account-page">
+  <div class="max-w-[1100px] mx-auto">
+    <p-breadcrumb
+      [model]="breadcrumbItems()"
+      styleClass="!bg-transparent !p-0 !border-0 mb-4 font-geist text-[12px]"
+    />
+
+    <div class="flex items-stretch gap-3.5 mb-6">
+      <button
+        type="button"
+        pButton
+        outlined
+        iconOnly
+        (click)="goBackToDiplomas()"
+        class="!w-11 !rounded-none self-stretch !bg-white"
+        aria-label="Back"
+      >
+        <img src="./icons/chevron-left.svg" alt="Back" class="w-4 h-4" />
+      </button>
+      <div
+        class="flex-1 flex items-center gap-2.5 bg-primary text-white px-5 py-3.5 shadow-sm min-w-0"
+      >
+        <i class="pi pi-user text-[18px]"></i>
+        <h1 class="text-[20px] sm:text-[22px] font-[700] truncate">Account Settings</h1>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-[230px_1fr] gap-6 min-h-[520px] items-start">
+      <aside class="border border-[#E5E7EB] p-5 flex flex-col gap-2 bg-white shadow-xs min-h-[520px]">
+        <button
+          type="button"
+          class="account-tab"
+          [class.account-tab--active]="activeTab() === 'profile'"
+          (click)="setTab('profile')"
+        >
+          <i class="pi pi-user text-[14px]"></i>
+          <span>Profile</span>
+        </button>
+
+        <button
+          type="button"
+          class="account-tab"
+          [class.account-tab--active]="activeTab() === 'password'"
+          (click)="setTab('password')"
+        >
+          <i class="pi pi-lock text-[14px]"></i>
+          <span>Change Password</span>
+        </button>
+
+        <div class="mt-auto pt-8">
+          <button
+            type="button"
+            pButton
+            text
+            severity="danger"
+            class="!w-full !justify-start"
+            (click)="logout()"
+          >
+            <i class="pi pi-sign-out"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="border border-[#E5E7EB] p-6 sm:p-8 bg-white shadow-xs min-h-[520px]">
+      @if (activeTab() === 'profile') {
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start gap-4 pb-4 border-b border-[#E5E7EB]">
+            <div
+              class="w-20 h-20 bg-[#EFF6FF] border border-primary text-primary flex items-center justify-center shrink-0 overflow-hidden font-bold text-2xl"
+            >
+              @if (profilePhotoUrl() && !photoFailed()) {
+                <img [src]="getImageUrl(profilePhotoUrl())" alt="Profile" class="w-full h-full object-cover" (error)="photoFailed.set(true)" />
+              } @else {
+                <span>{{ getUserInitials() }}</span>
+              }
+            </div>
+
+            <div class="flex-1 w-full max-w-sm">
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                class="hidden"
+                (change)="onFileSelected($event)"
+              />
+
+              <div
+                class="flex flex-col items-center justify-center gap-2 p-6 cursor-pointer border-2 border-dashed border-[#D1D5DB] rounded-md hover:border-primary bg-white hover:bg-[#F9FAFB] transition-colors text-center"
+                (click)="fileInput.click()"
+                (dragover)="$event.preventDefault()"
+                (drop)="onFileDropped($event)"
+              >
+                <i class="pi pi-cloud-upload text-3xl text-[#9CA3AF]"></i>
+                <div class="text-sm font-medium text-[#374151]">
+                  {{ isUploadingPhoto() ? 'Uploading photo...' : 'Drop photo or click to browse' }}
+                </div>
+                <div class="text-xs text-[#9CA3AF]">JPG, PNG or WEBP · Max 5MB</div>
+              </div>
+
+              @if (profilePhotoUrl()) {
+                <button
+                  type="button"
+                  pButton
+                  text
+                  severity="danger"
+                  class="!mt-2 !text-[12px]"
+                  (click)="removePhoto()"
+                >
+                  Remove current photo
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[13px] font-[500] text-[#374151]">First name</label>
+              <input
+                pInputText
+                formControlName="firstName"
+                class="w-full"
+                [class.ng-invalid]="isInvalid('profile', 'firstName')"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[13px] font-[500] text-[#374151]">Last name</label>
+              <input
+                pInputText
+                formControlName="lastName"
+                class="w-full"
+                [class.ng-invalid]="isInvalid('profile', 'lastName')"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[13px] font-[500] text-[#374151]">Username</label>
+            <input pInputText formControlName="username" class="w-full !bg-[#F9FAFB]" />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[13px] font-[500] text-[#374151]">Email</label>
+              <button
+                type="button"
+                pButton
+                link
+                class="!text-[12px] !p-0"
+                (click)="openEmailModal()"
+              >
+                <i class="pi pi-pencil"></i>
+                <span>Change</span>
+              </button>
+            </div>
+            <input pInputText [value]="currentEmail()" readonly class="w-full" />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[13px] font-[500] text-[#374151]">Phone</label>
+            <div class="flex gap-2">
+              <p-select
+                formControlName="countryCode"
+                [options]="countryOptions"
+                optionLabel="label"
+                optionValue="value"
+                styleClass="!w-[140px]"
+              />
+              <input pInputText formControlName="phone" class="flex-1" placeholder="1012345678" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-4 gap-3">
+            <button type="button" pButton text severity="danger" (click)="openDeleteModal()">
+              Delete My Account
+            </button>
+            <button type="submit" pButton [disabled]="isSavingProfile()">
+              {{ isSavingProfile() ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (activeTab() === 'password') {
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="flex flex-col gap-5">
+          <app-shared-password
+            id="currentPassword"
+            label="Current Password"
+            formControlName="currentPassword"
+            [hasError]="isInvalid('password', 'currentPassword')"
+            errorMessage="Current password is required"
+          />
+
+          <app-shared-password
+            id="newPassword"
+            label="New Password"
+            formControlName="newPassword"
+            [hasError]="isInvalid('password', 'newPassword')"
+            errorMessage="New password is required (min 6 chars)"
+          />
+
+          <app-shared-password
+            id="confirmPassword"
+            label="Confirm New Password"
+            formControlName="confirmPassword"
+            [hasError]="isInvalid('password', 'confirmPassword') || passwordMismatch()"
+            [errorMessage]="
+              passwordMismatch() ? 'Passwords do not match' : 'Please confirm your password'
+            "
+          />
+
+          <app-auth-error-banner [message]="passwordErrorBanner()" />
+
+          <button type="submit" pButton fluid [disabled]="isChangingPass()">
+            {{ isChangingPass() ? 'Updating...' : 'Update Password' }}
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+  </div>
+</div>
+
+<p-dialog
+  [visible]="showEmailModal()"
+  (visibleChange)="showEmailModal.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  [style]="{ width: '92vw', maxWidth: '440px' }"
+  styleClass="account-dialog"
+  (onHide)="closeEmailModal()"
+>
+  @if (emailStep() === 'form') {
+    <form [formGroup]="emailForm" (ngSubmit)="sendEmailOtp()" class="flex flex-col gap-4">
+      <app-shared-steps [totalSteps]="2" [currentStep]="0" />
+
+      <div>
+        <h2 class="text-[22px] font-[800] text-[#111827]">Change Email</h2>
+        <p class="text-[15px] font-[600] text-primary mt-1">Enter your new email</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[13px] font-[500] text-[#374151]">Email</label>
+        <input
+          pInputText
+          type="email"
+          formControlName="newEmail"
+          placeholder="user@example.com"
+          class="w-full"
+        />
+      </div>
+
+      <button type="submit" pButton fluid [disabled]="isSendingOtp()">
+        {{ isSendingOtp() ? 'Sending...' : 'Next >' }}
+      </button>
+    </form>
+  }
+
+  @if (emailStep() === 'otp') {
+    <div class="flex flex-col gap-4">
+      <app-shared-steps [totalSteps]="2" [currentStep]="1" />
+
+      <div>
+        <h2 class="text-[22px] font-[800] text-[#111827]">Change Email</h2>
+        <p class="text-[15px] font-[600] text-primary mt-1">Verify OTP</p>
+      </div>
+
+      <p class="text-[13px] text-[#6B7280] leading-relaxed">
+        Please enter the 6-digits code we have sent to:<br />
+        <strong class="text-[#374151]">{{ emailForm.value.newEmail }}</strong>
+        <button
+          type="button"
+          (click)="emailStep.set('form')"
+          class="text-primary font-[700] underline ml-1 cursor-pointer"
+        >
+          Edit
+        </button>
+      </p>
+
+      <app-shared-otp
+        [length]="6"
+        [hasError]="otpError()"
+        [ngModel]="otpValue()"
+        (ngModelChange)="otpValue.set($event)"
+      />
+
+      <p class="text-center text-[12px] text-[#6B7280]">
+        You can request another code in:
+        <strong>{{ resendCountdown() }}s</strong>
+      </p>
+
+      <button
+        type="button"
+        pButton
+        fluid
+        [disabled]="isVerifyingOtp()"
+        (click)="confirmEmailChange()"
+      >
+        {{ isVerifyingOtp() ? 'Verifying...' : 'Verify Code' }}
+      </button>
+    </div>
+  }
+</p-dialog>
+
+<p-dialog
+  [visible]="showDeleteModal()"
+  (visibleChange)="showDeleteModal.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  [style]="{ width: '92vw', maxWidth: '440px' }"
+  styleClass="account-dialog"
+  (onHide)="closeDeleteModal()"
+>
+  <div class="text-center py-2">
+    <div
+      class="w-16 h-16 rounded-full bg-[#FFF1F1] text-[#EF4444] flex items-center justify-center mx-auto mb-4 border border-[#FEE2E2]"
+    >
+      <i class="pi pi-exclamation-triangle text-2xl"></i>
+    </div>
+
+    <h2 class="text-[15px] font-[700] text-[#EF4444] mb-1">
+      Are you sure you want to delete your account?
+    </h2>
+    <p class="text-[12px] text-[#6B7280] mb-6">This action is permanent and cannot be undone.</p>
+
+    <div class="pt-4 border-t border-[#E5E7EB] grid grid-cols-2 gap-3">
+      <button type="button" pButton severity="secondary" fluid (click)="closeDeleteModal()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        pButton
+        severity="danger"
+        fluid
+        [disabled]="isDeleting()"
+        (click)="confirmDeleteAccount()"
+      >
+        {{ isDeleting() ? 'Deleting...' : 'Yes, delete' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmdialog />

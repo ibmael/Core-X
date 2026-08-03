@@ -1,0 +1,27 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-admin-home',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  template: `
+    <div class="flex flex-col items-center justify-center h-full gap-4 text-center p-12">
+      <div class="w-20 h-20 rounded-full bg-[#1E293B] text-[#64748B] flex items-center justify-center text-4xl">
+        <i class="fa-solid fa-hammer"></i>
+      </div>
+      <h1 class="text-2xl font-bold text-[#E2E8F0] font-inter">Admin Panel</h1>
+      <p class="text-[#64748B] max-w-sm font-geist text-sm">
+        This section is under construction. Admin features will be added here soon.
+      </p>
+      <a
+        routerLink="/dashboard"
+        class="mt-4 px-5 py-2.5 bg-[#155DFC] text-white text-sm rounded font-geist hover:bg-blue-700 transition-colors cursor-pointer"
+      >
+        ← Back to Dashboard
+      </a>
+    </div>
+  `,
+})
+export class AdminHome {}

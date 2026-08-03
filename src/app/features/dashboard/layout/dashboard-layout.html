@@ -1,0 +1,164 @@
+<div class="flex flex-col md:flex-row h-screen w-full overflow-hidden bg-white">
+  <header
+    class="md:hidden flex items-center justify-between px-4 py-3 bg-[#F3F7FF] border-b border-[#E5E7EB] shrink-0 z-30"
+  >
+    <div class="flex items-center gap-2">
+      <img src="./icons/Final%20Logo%201.svg" alt="ELEVATE" class="h-6 w-auto object-contain" />
+      <span class="text-[13px] font-[600] text-primary font-geist">Exam App</span>
+    </div>
+    <button
+      type="button"
+      (click)="toggleMobileSidebar()"
+      class="p-2 text-[#374151] hover:bg-[#EAF2FF] transition-colors cursor-pointer"
+      aria-label="Toggle Navigation"
+    >
+      <svg data-p-icon="bars" [size]="20"></svg>
+    </button>
+  </header>
+
+  <p-drawer
+    [(visible)]="isMobileSidebarOpen"
+    header="TABS"
+    styleClass="w-[280px]! p-0!"
+    [pt]="{ content: { class: 'p-0! bg-[#F3F7FF]' } }"
+  >
+    <div class="flex flex-col h-full bg-[#F3F7FF] p-5">
+      <div class="mb-8">
+        <img
+          src="./icons/Final%20Logo%201.svg"
+          alt="ELEVATE"
+          class="h-8 w-auto object-contain mb-2"
+        />
+        <div class="flex items-center gap-1.5 mt-1.5">
+          <img src="./icons/folder-code.svg" alt="" class="w-5 h-5" />
+          <span class="text-[13px] font-[600] text-primary font-geist">Exam App</span>
+        </div>
+      </div>
+
+      <nav class="flex flex-col gap-1 flex-1">
+        @for (item of navItems; track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active-nav"
+            [routerLinkActiveOptions]="{ exact: false }"
+            (click)="closeMobileSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-[14px] font-[500] font-geist text-[#6B7280] hover:bg-[#EAF2FF] hover:text-primary transition-all cursor-pointer whitespace-nowrap"
+          >
+            <img [src]="item.icon" alt="" class="w-5 h-5 shrink-0" />
+            <span class="whitespace-nowrap">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="pt-4 border-t border-[#E5E7EB]">
+        <div
+          (click)="menuMobile.toggle($event)"
+          class="flex items-center gap-2.5 cursor-pointer p-1.5 hover:bg-[#EAF2FF] transition-colors"
+        >
+          @if (currentUser()?.profilePhoto && !photoFailed()) {
+            <img
+              [src]="getImageUrl(currentUser()?.profilePhoto)"
+              alt=""
+              class="w-10 h-10 object-cover border-2 border-primary shrink-0"
+              (error)="photoFailed.set(true)"
+            />
+          } @else {
+            <div
+              class="w-10 h-10 bg-primary text-white flex items-center justify-center font-bold text-[13px] border-2 border-primary shrink-0 font-geist"
+            >
+              {{ getUserInitials() }}
+            </div>
+          }
+
+          <div class="flex-1 min-w-0">
+            <p class="text-[13px] font-[600] font-geist text-primary truncate">
+              {{ currentUser()?.firstName || 'Firstname' }}
+            </p>
+            <p class="text-[11px] font-geist text-[#9CA3AF] truncate">
+              {{ currentUser()?.email || 'user-email@example.com' }}
+            </p>
+          </div>
+
+          <div class="w-7 h-5 flex items-center justify-center shrink-0 cursor-pointer">
+            <img
+              src="./icons/ellipsis-vertical.svg"
+              alt="Options"
+              class="w-3.5 h-3.5 icon-primary"
+            />
+          </div>
+        </div>
+        <p-menu #menuMobile [model]="profileMenuItems" [popup]="true" appendTo="body" />
+      </div>
+    </div>
+  </p-drawer>
+
+  <aside class="hidden md:flex w-[250px] shrink-0 bg-[#F3F7FF] border-r border-[#E5E7EB] flex-col">
+    <div class="flex-1 flex flex-col p-5">
+      <div class="mb-8">
+        <img
+          src="./icons/Final%20Logo%201.svg"
+          alt="ELEVATE"
+          class="h-8 w-auto object-contain mb-2"
+        />
+        <div class="flex items-center gap-1.5 mt-1.5">
+          <img src="./icons/folder-code.svg" alt="" class="w-5 h-5" />
+          <span class="text-[13px] font-[600] text-primary font-geist">Exam App</span>
+        </div>
+      </div>
+
+      <nav class="flex flex-col gap-1">
+        @for (item of navItems; track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active-nav"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="flex items-center gap-3 px-4 py-3 text-[14px] font-[500] font-geist text-[#6B7280] hover:bg-[#EAF2FF] hover:text-primary transition-all cursor-pointer whitespace-nowrap"
+          >
+            <img [src]="item.icon" alt="" class="w-5 h-5 shrink-0" />
+            <span class="whitespace-nowrap">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+    </div>
+
+    <div class="relative p-4 border-t border-[#E5E7EB]">
+      <div
+        (click)="menuDesktop.toggle($event)"
+        class="flex items-center gap-2.5 cursor-pointer p-1.5 hover:bg-[#EAF2FF] transition-colors"
+      >
+        @if (currentUser()?.profilePhoto && !photoFailed()) {
+          <img
+            [src]="getImageUrl(currentUser()?.profilePhoto)"
+            alt=""
+            class="w-10 h-10 object-cover border-1 border-primary shrink-0"
+            (error)="photoFailed.set(true)"
+          />
+        } @else {
+          <div
+            class="w-10 h-10 bg-primary text-white flex items-center justify-center font-bold text-[13px] border-1 border-primary shrink-0 font-geist"
+          >
+            {{ getUserInitials() }}
+          </div>
+        }
+
+        <div class="flex-1 min-w-0">
+          <p class="text-[16px] font-[500] font-geist text-primary truncate">
+            {{ currentUser()?.firstName || 'Firstname' }}
+          </p>
+          <p class="text-[14px] font-[400] font-geist text-[#9CA3AF] truncate">
+            {{ currentUser()?.email || 'user-email@example.com' }}
+          </p>
+        </div>
+
+        <div class="w-7 h-5 flex items-center justify-center shrink-0 cursor-pointer">
+          <img src="./icons/ellipsis-vertical.svg" alt="Options" class="w-3.5 h-3.5 icon-primary" />
+        </div>
+      </div>
+      <p-menu #menuDesktop [model]="profileMenuItems" [popup]="true" appendTo="body" />
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-y-auto bg-[#F3F4F6] p-4 sm:p-6 md:p-8 min-w-0">
+    <router-outlet />
+  </main>
+</div>

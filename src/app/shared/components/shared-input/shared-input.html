@@ -7,10 +7,14 @@
     [id]="id"
     [type]="type"
     [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInput($event)"
+    (blur)="onTouched()"
     [attr.aria-invalid]="hasError"
     [attr.size]="null"
     [class]="
-      'auth-input h-12 px-4 border outline-hidden font-geist text-[14px] placeholder:text-[#c0c6d0] bg-white transition-colors ' +
+      'auth-input h-12 px-4 border outline-hidden font-geist text-[14px] text-[#0f172a] placeholder:text-[#c0c6d0] bg-white transition-colors ' +
       (hasError
         ? 'border-[#f87171] focus:border-[#f87171] focus:ring-1 focus:ring-[#fca5a5]'
         : 'border-[#d1d5db] focus:border-primary focus:ring-1 focus:ring-primary')

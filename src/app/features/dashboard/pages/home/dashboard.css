@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.dashboard-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #6b7280;
+  font-size: 1rem;
+}

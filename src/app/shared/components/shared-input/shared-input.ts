@@ -1,17 +1,53 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-shared-input',
   imports: [CommonModule],
   templateUrl: './shared-input.html',
   styleUrl: './shared-input.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SharedInput),
+      multi: true,
+    },
+  ],
 })
-export class SharedInput {
+export class SharedInput implements ControlValueAccessor {
   @Input() id!: string;
   @Input() label!: string;
   @Input() placeholder = '';
   @Input() type = 'text';
   @Input() hasError = false;
   @Input() errorMessage = '';
+
+  value = '';
+  disabled = false;
+
+  onChange: (value: string) => void = () => {};
+  onTouched: () => void = () => {};
+
+  writeValue(val: string): void {
+    this.value = val || '';
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  onInput(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.value = val;
+    this.onChange(val);
+  }
 }
