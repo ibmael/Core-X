@@ -12,6 +12,7 @@ import {
   SubmitExamRequest,
   SubmissionApiResponse,
 } from '../models/exam.model';
+import { UploadImageApiResponse, UploadImagePayload } from '../models/upload-image.model';
 
 @Injectable({ providedIn: 'root' })
 export class DiplomaService {
@@ -23,7 +24,6 @@ export class DiplomaService {
     return new HttpContext().set(SKIP_ERROR, true);
   }
 
-  // ── Diplomas ──────────────────────────────────────────────────────────
 
   getDiplomas(
     page: number = 1,
@@ -63,7 +63,6 @@ export class DiplomaService {
       .pipe(map((res) => res.diploma));
   }
 
-  // ── Exams ─────────────────────────────────────────────────────────────
 
   getDiplomaExams(diplomaId?: string, search: string = ''): Observable<Exam[]> {
     let params = new HttpParams().set('limit', '100');
@@ -90,7 +89,6 @@ export class DiplomaService {
       .pipe(map((res) => res.exam));
   }
 
-  // ── Questions ─────────────────────────────────────────────────────────
 
   getExamQuestions(examId: string): Observable<Question[]> {
     return this.http
@@ -100,7 +98,6 @@ export class DiplomaService {
       .pipe(map((res) => res.payload?.questions || []));
   }
 
-  // ── Submissions ───────────────────────────────────────────────────────
 
   submitExam(payload: SubmitExamRequest): Observable<SubmissionApiResponse['payload']> {
     return this.http
@@ -110,34 +107,28 @@ export class DiplomaService {
       .pipe(map((res) => res.payload));
   }
 
-  // ── Image Upload ──────────────────────────────────────────────────────
 
   uploadImage(file: File): Observable<{ url: string }> {
     const formData = new FormData();
     formData.append('image', file);
     return this.http
-      .post<unknown>(`${this.apiUrl}/api/upload`, formData, {
+      .post<UploadImageApiResponse>(`${this.apiUrl}/api/upload`, formData, {
         context: this.getSkipErrorContext(),
       })
       .pipe(
         map((res) => {
-          const raw = res as Record<string, unknown>;
-          const payload = (raw?.['payload'] ?? raw?.['data'] ?? raw) as Record<string, unknown> | string;
-          const url =
-            (typeof payload === 'string' ? payload : null) ||
-            (typeof payload === 'object' && payload
-              ? (payload['url'] as string) ||
-                (payload['imageUrl'] as string) ||
-                (payload['path'] as string) ||
-                (payload['location'] as string) ||
-                (payload['secure_url'] as string)
-              : null) ||
-            (raw?.['url'] as string) ||
-            (raw?.['imageUrl'] as string) ||
-            '';
-
+          const payload = res.payload ?? res.data ?? res;
+          const url = this.extractUrl(payload) || res.url || res.imageUrl || '';
           return { url };
         }),
       );
+  }
+
+  private extractUrl(payload: UploadImagePayload | string | undefined): string | null {
+    if (typeof payload === 'string') return payload;
+    if (typeof payload === 'object' && payload) {
+      return payload.url || payload.imageUrl || payload.path || payload.location || payload.secure_url || null;
+    }
+    return null;
   }
 }

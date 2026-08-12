@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   computed,
+  DestroyRef,
   ChangeDetectionStrategy,
   ViewChild,
 } from '@angular/core';
@@ -17,6 +18,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastrService } from 'ngx-toastr';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -70,6 +72,7 @@ export class AccountPage implements OnInit, OnDestroy {
   private userState = inject(UserStateService);
   private router = inject(Router);
   private confirmation = inject(ConfirmationService);
+  private destroyRef = inject(DestroyRef);
 
   activeTab = signal<ActiveTab>('profile');
   isLoading = signal(true);
@@ -121,6 +124,10 @@ export class AccountPage implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
+    this.initialize();
+  }
+
+  private initialize(): void {
     const user = this.userState.currentUser();
     if (user?.profilePhoto) {
       this.profilePhotoUrl.set(user.profilePhoto);
@@ -144,7 +151,9 @@ export class AccountPage implements OnInit, OnDestroy {
 
   loadProfile(): void {
     this.isLoading.set(true);
-    this.authService.getProfile().subscribe({
+    this.authService.getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         const user = res?.user;
         if (!user) {
@@ -227,7 +236,9 @@ export class AccountPage implements OnInit, OnDestroy {
 
   private uploadPhoto(file: File): void {
     this.isUploadingPhoto.set(true);
-    this.diplomaService.uploadImage(file).subscribe({
+    this.diplomaService.uploadImage(file)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         const url = res?.url?.trim();
         if (url) {
@@ -277,7 +288,9 @@ export class AccountPage implements OnInit, OnDestroy {
     };
 
     this.isSavingProfile.set(true);
-    this.authService.updateProfile(request).subscribe({
+    this.authService.updateProfile(request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         if (!res?.user) {
           this.toastr.error('Failed to update profile');
@@ -318,6 +331,7 @@ export class AccountPage implements OnInit, OnDestroy {
     this.isSendingOtp.set(true);
     this.accountService
       .requestEmailChange({ newEmail: this.emailForm.value.newEmail! })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.emailStep.set('otp');
@@ -343,6 +357,7 @@ export class AccountPage implements OnInit, OnDestroy {
         newEmail: this.emailForm.value.newEmail!,
         otp: this.otpValue(),
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.currentEmail.set(this.emailForm.value.newEmail!);
@@ -372,6 +387,7 @@ export class AccountPage implements OnInit, OnDestroy {
         newPassword: this.passwordForm.value.newPassword!,
         confirmPassword: this.passwordForm.value.confirmPassword!,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.toastr.success('Your password has been updated.');
@@ -395,7 +411,9 @@ export class AccountPage implements OnInit, OnDestroy {
 
   confirmDeleteAccount(): void {
     this.isDeleting.set(true);
-    this.accountService.deleteAccount('password').subscribe({
+    this.accountService.deleteAccount('password')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.toastr.success('Account deleted successfully.');
         this.isDeleting.set(false);

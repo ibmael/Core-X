@@ -1,8 +1,9 @@
 import {
-  Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectionStrategy
+  Component, OnInit, OnDestroy, inject, signal, computed, DestroyRef, ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -23,6 +24,7 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private diplomaService = inject(DiplomaService);
+  private destroyRef = inject(DestroyRef);
 
   examId = signal<string>('');
   diplomaId = signal<string>('');
@@ -47,7 +49,7 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
   ]);
 
   timeRemainingSeconds = signal<number>(300);
-  private timerInterval: any;
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
 
   currentQuestion = computed(() => {
     const list = this.questions();
@@ -78,6 +80,14 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
   readonly CIRCUMFERENCE = 2 * Math.PI * 52;
 
   ngOnInit(): void {
+    this.initializeExam();
+  }
+
+  ngOnDestroy(): void {
+    this.stopTimer();
+  }
+
+  private initializeExam(): void {
     const state = history.state;
     if (state?.examTitle) this.examTitle.set(state.examTitle);
     if (state?.diplomaTitle) this.diplomaTitle.set(state.diplomaTitle);
@@ -89,10 +99,6 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
 
     this.loadExamAndQuestions(examId);
     this.startTimer();
-  }
-
-  ngOnDestroy(): void {
-    this.stopTimer();
   }
 
   private startTimer(): void {
@@ -112,6 +118,7 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
   private stopTimer(): void {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
+      this.timerInterval = null;
     }
   }
 
@@ -119,23 +126,27 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.diplomaService.getExam(id).subscribe({
-      next: (exam) => {
-        if (exam?.title) this.examTitle.set(exam.title);
-        if (exam?.duration) this.timeRemainingSeconds.set(exam.duration * 60);
-      },
-    });
+    this.diplomaService.getExam(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (exam) => {
+          if (exam?.title) this.examTitle.set(exam.title);
+          if (exam?.duration) this.timeRemainingSeconds.set(exam.duration * 60);
+        },
+      });
 
-    this.diplomaService.getExamQuestions(id).subscribe({
-      next: (questions) => {
-        this.questions.set(questions);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load questions. Please try again.');
-        this.isLoading.set(false);
-      },
-    });
+    this.diplomaService.getExamQuestions(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (questions) => {
+          this.questions.set(questions);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.error.set('Failed to load questions. Please try again.');
+          this.isLoading.set(false);
+        },
+      });
   }
 
   selectOption(answerId: string): void {
@@ -177,16 +188,18 @@ export class ExamQuestionsPage implements OnInit, OnDestroy {
       examId: this.examId(),
       answers: answersPayload,
       startedAt: new Date().toISOString(),
-    }).subscribe({
-      next: (res) => {
-        this.submission.set(res.submission);
-        this.analytics.set(res.analytics);
-        this.isSubmitting.set(false);
-      },
-      error: () => {
-        this.isSubmitting.set(false);
-      },
-    });
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.submission.set(res.submission);
+          this.analytics.set(res.analytics);
+          this.isSubmitting.set(false);
+        },
+        error: () => {
+          this.isSubmitting.set(false);
+        },
+      });
   }
 
   restartExam(): void {

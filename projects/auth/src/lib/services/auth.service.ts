@@ -40,8 +40,6 @@ export class AuthService extends IAuthService {
   // error handling
   private handleError = (error: HttpErrorResponse) => throwError(() => error);
 
-  // ─── Token Storage (SSR-safe) ────────────────────────────────────────────────
-
   saveToken(token: string): void {
     this.storeToken(token);
   }
@@ -90,8 +88,6 @@ export class AuthService extends IAuthService {
       sessionStorage.removeItem(PENDING_INFO_KEY);
     }
   }
-
-  // ─── Register Flow ────────────────
 
   setStoredEmail(email: string): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -147,8 +143,6 @@ export class AuthService extends IAuthService {
       sessionStorage.removeItem(PENDING_INFO_KEY);
     }
   }
-
-  // ─── API Calls ───────────────────────────────────────────────────────────────
 
   // send email verification
   override sendEmailVerification(request: SendEmailRequest): Observable<OtpResponse> {

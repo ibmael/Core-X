@@ -1,8 +1,9 @@
 import {
-  Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
+  Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -23,6 +24,7 @@ export class DiplomaExamsPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private diplomaService = inject(DiplomaService);
+  private destroyRef = inject(DestroyRef);
 
   diplomaId = signal<string>('');
   diploma = signal<Diploma | null>(null);
@@ -54,6 +56,10 @@ export class DiplomaExamsPage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeFromRoute();
+  }
+
+  private initializeFromRoute(): void {
     const state = history.state;
     if (state?.title) {
       this.initialStateTitle.set(state.title);
@@ -67,21 +73,25 @@ export class DiplomaExamsPage implements OnInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.diplomaService.getDiploma(id).subscribe({
-      next: (diploma) => this.diploma.set(diploma),
-      error: () => {},
-    });
+    this.diplomaService.getDiploma(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (diploma) => this.diploma.set(diploma),
+        error: () => {},
+      });
 
-    this.diplomaService.getDiplomaExams(id).subscribe({
-      next: (exams) => {
-        this.exams.set(exams);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load exams. Please try again.');
-        this.isLoading.set(false);
-      },
-    });
+    this.diplomaService.getDiplomaExams(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (exams) => {
+          this.exams.set(exams);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.error.set('Failed to load exams. Please try again.');
+          this.isLoading.set(false);
+        },
+      });
   }
 
   startExam(exam: Exam): void {

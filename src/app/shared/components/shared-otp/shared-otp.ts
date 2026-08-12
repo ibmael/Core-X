@@ -26,7 +26,7 @@ export class SharedOtp implements ControlValueAccessor {
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
-  onModelChange(val: any): void {
+  onModelChange(val: string | number | null): void {
     const strVal = val != null ? String(val) : '';
     if (this.value !== strVal) {
       this.value = strVal;
@@ -35,7 +35,7 @@ export class SharedOtp implements ControlValueAccessor {
     }
   }
 
-  writeValue(val: any): void {
+  writeValue(val: string | number | null): void {
     this.value = val != null ? String(val) : '';
   }
 

@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject, DestroyRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'auth';
 
@@ -33,7 +34,8 @@ export class OTP implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   resendLoading = false;
   timerCount = 60;
-  timerInterval: any;
+  timerInterval: ReturnType<typeof setInterval> | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -91,7 +93,9 @@ export class OTP implements OnInit, OnDestroy {
     this.resendLoading = true;
     this.errorMessage = null;
 
-    this.authService.sendEmailVerification({ email: this.email }).subscribe({
+    this.authService.sendEmailVerification({ email: this.email })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.resendLoading = false;
         this.startTimer();
@@ -119,6 +123,7 @@ export class OTP implements OnInit, OnDestroy {
 
     this.authService
       .confirmEmailVerification({ email: this.email, code: codeStr })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.loading = false;

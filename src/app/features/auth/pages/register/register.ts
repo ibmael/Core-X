@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'auth';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthHeader } from '../../../../shared/components/auth-header/auth-header';
 import { SharedButton } from '../../../../shared/components/shared-button/shared-button';
@@ -26,6 +27,8 @@ import { SharedInput } from '../../../../shared/components/shared-input/shared-i
   styleUrl: './register.css',
 })
 export class Register {
+  private destroyRef = inject(DestroyRef);
+
   registerForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
@@ -54,7 +57,9 @@ export class Register {
     this.loading = true;
     this.errorMessage = null;
 
-    this.authService.sendEmailVerification({ email }).subscribe({
+    this.authService.sendEmailVerification({ email })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.authService.setStoredEmail(email);
         this.loading = false;

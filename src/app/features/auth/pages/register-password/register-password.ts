@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, inject, DestroyRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import {
   matchValidator,
   RegisterRequest,
 } from 'auth';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SharedSteps } from '../../../../shared/components/shared-steps/shared-steps';
 import { AuthHeader } from '../../../../shared/components/auth-header/auth-header';
@@ -36,6 +37,7 @@ export class RegisterPassword implements OnInit {
   passwordForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -99,7 +101,9 @@ export class RegisterPassword implements OnInit {
     this.loading = true;
     this.errorMessage = null;
 
-    this.authService.register(payload).subscribe({
+    this.authService.register(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         const user = this.authAdapter.adapt(res);
         if (user) {

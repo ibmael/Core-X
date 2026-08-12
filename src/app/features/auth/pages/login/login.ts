@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService, AuthAdapterService } from 'auth';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthHeader } from '../../../../shared/components/auth-header/auth-header';
 import { AuthFooterLink } from '../../../../shared/components/auth-footer-link/auth-footer-link';
@@ -30,6 +31,8 @@ import { UserStateService } from '../../../../core/services/user-state.service';
   ],
 })
 export class Login {
+  private destroyRef = inject(DestroyRef);
+
   loginForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
@@ -64,7 +67,9 @@ export class Login {
     this.loading = true;
     this.errorMessage = null;
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login(this.loginForm.value)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         const user = this.authAdapter.adapt(res);
         if (user) {

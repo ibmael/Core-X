@@ -10,7 +10,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 
-  // ─── Dashboard (Protected Area with Sidebar Layout) ──────────────────────
   {
     path: 'dashboard',
     canActivate: [authGuard],
@@ -20,7 +19,6 @@ export const routes: Routes = [
       ),
   },
 
-  // ─── Admin Area (Protected Area with Admin Layout) ───────────────────────
   {
     path: 'admin',
     canActivate: [authGuard, adminGuard],
@@ -28,7 +26,6 @@ export const routes: Routes = [
       import('./features/admin/admin.routes').then((m) => m.adminRoutes),
   },
 
-  // ─── Auth Area ───────────────────────────────────────────────────────────
   {
     path: 'auth',
     loadComponent: () =>
@@ -96,7 +93,6 @@ export const routes: Routes = [
     ],
   },
 
-  // ─── 404 ─────────────────────────────────────────────────────────────────
   {
     path: '**',
     loadComponent: () =>

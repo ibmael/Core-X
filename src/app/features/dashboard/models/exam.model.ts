@@ -3,7 +3,7 @@ export interface Exam {
   title: string;
   description: string;
   image: string;
-  duration: number; // in minutes
+  duration: number;
   questionsCount: number;
   diplomaId: string;
   diploma?: {
@@ -14,7 +14,6 @@ export interface Exam {
   createdAt?: string;
   updatedAt?: string;
 
-  // UI state extensions
   status?: 'new' | 'completed' | 'in-progress';
   score?: number;
 }

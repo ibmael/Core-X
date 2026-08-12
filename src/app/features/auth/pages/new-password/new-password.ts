@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService, passwordValidator, matchValidator } from 'auth';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SharedButton } from '../../../../shared/components/shared-button/shared-button';
 import { SharedPassword } from '../../../../shared/components/shared-password/shared-password';
@@ -27,6 +28,7 @@ export class NewPassword implements OnInit {
   loading = false;
   errorMessage: string | null = null;
   token: string = '';
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -71,6 +73,7 @@ export class NewPassword implements OnInit {
         newPassword,
         confirmPassword,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.loading = false;

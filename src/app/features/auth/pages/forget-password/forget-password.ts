@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'auth';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SharedInput } from '../../../../shared/components/shared-input/shared-input';
 import { AuthHeader } from '../../../../shared/components/auth-header/auth-header';
@@ -28,6 +29,7 @@ export class ForgetPassword {
   forgetForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -58,7 +60,9 @@ export class ForgetPassword {
         ? `${window.location.origin}/auth/new-password`
         : 'http://localhost:4200/auth/new-password';
 
-    this.authService.forgotPassword({ email, redirectUrl }).subscribe({
+    this.authService.forgotPassword({ email, redirectUrl })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.authService.setStoredEmail(email);
         this.loading = false;

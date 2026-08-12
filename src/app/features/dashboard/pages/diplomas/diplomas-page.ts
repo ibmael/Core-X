@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal, HostListener, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -19,6 +20,7 @@ import { Diploma } from '../../models/diploma.model';
 export class DiplomasPage implements OnInit {
   private diplomaService = inject(DiplomaService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   diplomas = signal<Diploma[]>([]);
   isLoading = signal(true);
@@ -50,7 +52,9 @@ export class DiplomasPage implements OnInit {
     this.page.set(1);
     this.hasMore.set(true);
 
-    this.diplomaService.getDiplomas(1, this.rows()).subscribe({
+    this.diplomaService.getDiplomas(1, this.rows())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         this.diplomas.set(res.data);
         this.totalRecords.set(res.total || res.data.length);
@@ -71,7 +75,9 @@ export class DiplomasPage implements OnInit {
     const nextPage = this.page() + 1;
     this.isLoadingMore.set(true);
 
-    this.diplomaService.getDiplomas(nextPage, this.rows()).subscribe({
+    this.diplomaService.getDiplomas(nextPage, this.rows())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res) => {
         this.page.set(nextPage);
         this.diplomas.update((old) => [...old, ...res.data]);
