@@ -10,4 +10,6 @@ export class AuthApi {
   static readonly FORGOT_PASSWORD = '/api/auth/forgot-password';
 
   static readonly RESET_PASSWORD = '/api/auth/reset-password';
+
+  static readonly PROFILE = '/api/users/profile';
 }

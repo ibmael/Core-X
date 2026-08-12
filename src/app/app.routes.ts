@@ -1,14 +1,35 @@
 import { Routes } from '@angular/router';
+import { authGuard, guestGuard } from 'auth';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
+  // Root redirect → login page.
   {
     path: '',
     redirectTo: 'auth/login',
     pathMatch: 'full',
   },
+
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/dashboard/dashboard.routes').then(
+        (m) => m.dashboardRoutes,
+      ),
+  },
+
+  {
+    path: 'admin',
+    canActivate: [authGuard, adminGuard],
+    loadChildren: () =>
+      import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+  },
+
   {
     path: 'auth',
-    loadComponent: () => import('./components/auth-layout/auth-layout').then((m) => m.AuthLayout),
+    loadComponent: () =>
+      import('./features/auth/layout/auth-layout').then((m) => m.AuthLayout),
     children: [
       {
         path: '',
@@ -17,47 +38,66 @@ export const routes: Routes = [
       },
       {
         path: 'login',
-        loadComponent: () => import('./components/login/login').then((m) => m.Login),
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/pages/login/login').then((m) => m.Login),
       },
       {
         path: 'register',
-        loadComponent: () => import('./components/register/register').then((m) => m.Register),
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/pages/register/register').then(
+            (m) => m.Register,
+          ),
       },
       {
         path: 'otp',
-        loadComponent: () => import('./components/otp/otp').then((m) => m.OTP),
+        loadComponent: () =>
+          import('./features/auth/pages/otp/otp').then((m) => m.OTP),
       },
       {
         path: 'register-info',
         loadComponent: () =>
-          import('./components/register-info/register-info').then((m) => m.RegisterInfo),
+          import('./features/auth/pages/register-info/register-info').then(
+            (m) => m.RegisterInfo,
+          ),
       },
       {
         path: 'register-password',
         loadComponent: () =>
-          import('./components/register-password/register-password').then(
-            (m) => m.RegisterPassword,
-          ),
+          import(
+            './features/auth/pages/register-password/register-password'
+          ).then((m) => m.RegisterPassword),
       },
       {
         path: 'forget-password',
         loadComponent: () =>
-          import('./components/forget-password/forget-password').then((m) => m.ForgetPassword),
+          import(
+            './features/auth/pages/forget-password/forget-password'
+          ).then((m) => m.ForgetPassword),
       },
       {
         path: 'password-reset',
         loadComponent: () =>
-          import('./components/password-reset/password-reset').then((m) => m.PasswordReset),
+          import(
+            './features/auth/pages/password-reset/password-reset'
+          ).then((m) => m.PasswordReset),
       },
       {
         path: 'new-password',
         loadComponent: () =>
-          import('./components/new-password/new-password').then((m) => m.NewPassword),
+          import('./features/auth/pages/new-password/new-password').then(
+            (m) => m.NewPassword,
+          ),
       },
     ],
   },
+
   {
     path: '**',
-    loadComponent: () => import('./components/not-found/not-found').then((m) => m.NotFound),
+    loadComponent: () =>
+      import('./features/auth/pages/not-found/not-found').then(
+        (m) => m.NotFound,
+      ),
   },
 ];

@@ -1,13 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@import 'ngx-toastr/toastr';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 @theme {
   --font-inter: 'Inter', sans-serif;
   --font-geist: 'Geist Mono', monospace;
-
-  /* used colors  */
   --color-primary: #155dfc;
+}
+
+.font-geist {
+  font-family: var(--font-geist, 'Geist Mono', monospace);
+}
+
+.font-inter {
+  font-family: var(--font-inter, 'Inter', sans-serif);
+}
+
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
 }
 
 body {
@@ -20,14 +32,59 @@ body {
   overflow-x: hidden;
 }
 
-/*
-  Routed auth pages are inserted NEXT TO <router-outlet>.
-  Angular view encapsulation blocks auth-layout.css from styling those hosts,
-  so this rule must live in global styles.
+#toast-container.toast-bottom-right {
+  bottom: 24px !important;
+  right: 24px !important;
+}
 
-  Without width: 100%, the page host shrink-wraps to the browser's default
-  <input size="20"> width — which is why fields looked uneven / too narrow.
-*/
+#toast-container > div.ngx-toastr {
+  background-color: #111827 !important;
+  background-image: none !important;
+  color: #f8fafc !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0 !important;
+  padding: 14px 20px 14px 44px !important;
+  opacity: 0.98 !important;
+  font-family: var(--font-geist), monospace !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  width: auto !important;
+  min-width: 280px !important;
+  max-width: 420px !important;
+  position: relative !important;
+  border: 1px solid #374151 !important;
+}
+
+#toast-container > div.ngx-toastr::before {
+  content: '' !important;
+  width: 18px !important;
+  height: 18px !important;
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+
+#toast-container > div.toast-success::before {
+  background-image: url('/icons/check.svg') !important;
+  filter: invert(58%) sepia(85%) saturate(386%) hue-rotate(113deg) brightness(98%) contrast(92%) !important;
+}
+
+#toast-container > div.toast-error::before {
+  background-image: url('/icons/triangle-alert.svg') !important;
+  filter: invert(41%) sepia(83%) saturate(2329%) hue-rotate(338deg) brightness(96%) contrast(93%) !important;
+}
+
+#toast-container > div.toast-info::before {
+  background-image: url('/icons/circle-question-mark.svg') !important;
+  filter: invert(32%) sepia(98%) saturate(2421%) hue-rotate(218deg) brightness(101%) contrast(98%) !important;
+}
+
 .auth-right > *:not(router-outlet) {
   display: block;
   width: 100%;
@@ -45,6 +102,18 @@ body {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  border-radius: 2px;
+  border-radius: 0;
   box-sizing: border-box;
 }
+
+/* Fix browser autofill dark/black background on inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+

@@ -9,3 +9,5 @@ export * from './confirm-email.request';
 export * from './forgot-password.request';
 
 export * from './reset-password.request';
+
+export * from './update-profile.request';

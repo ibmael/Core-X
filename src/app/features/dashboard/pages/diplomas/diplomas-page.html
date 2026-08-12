@@ -1,0 +1,113 @@
+<div class="max-w-[1100px] mx-auto pb-12">
+  <p-breadcrumb
+    [model]="breadcrumbItems"
+    styleClass="!bg-transparent !p-0 !border-0 mb-4 font-geist text-[12px]"
+  />
+
+  <div class="flex items-center gap-3 bg-primary text-white px-5 py-4 mb-6 shadow-sm">
+    <img src="./icons/Vector.svg" alt="Diplomas" class="w-6 h-6 shrink-0 brightness-0 invert" />
+    <h1 class="text-[22px] font-[700]">Diplomas</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (item of skeletonItems; track $index) {
+        <div class="p-4 rounded-lg bg-white border border-[#E5E7EB]">
+          <p-skeleton width="100%" height="240px" />
+          <div class="mt-4 flex flex-col gap-2">
+            <p-skeleton width="70%" height="1.5rem" />
+            <p-skeleton width="100%" height="1rem" />
+            <p-skeleton width="90%" height="1rem" />
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!isLoading() && error()) {
+    <div class="flex flex-col items-center py-16 text-center gap-3">
+      <img src="./icons/triangle-alert.svg" alt="Error" class="w-10 h-10" />
+      <p class="text-[#374151] font-semibold">{{ error() }}</p>
+      <p-button label="Try Again" icon="pi pi-refresh" (onClick)="loadInitialDiplomas()" />
+    </div>
+  }
+
+  @if (!isLoading() && !error() && diplomas().length === 0) {
+    <div class="flex flex-col items-center py-16 text-center gap-3">
+      <img src="./icons/brain.svg" alt="No Diplomas" class="w-12 h-12 opacity-40" />
+      <p class="text-[#6B7280]">No diplomas available yet.</p>
+    </div>
+  }
+
+  @if (!isLoading() && !error() && diplomas().length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (diploma of diplomas(); track diploma.id; let i = $index) {
+        <button
+          type="button"
+          class="relative h-[420px] overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300 text-left group cursor-pointer"
+          (click)="navigateToExams(diploma.id, diploma.title)"
+        >
+          <img
+            [src]="diploma.image || getGradientImage(i)"
+            [alt]="diploma.title"
+            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            (error)="onImageError($event, i)"
+          />
+
+          <div
+            class="absolute inset-x-0 bottom-0 bg-primary/90 p-5 min-h-[38%] group-hover:min-h-[55%] transition-all duration-300"
+          >
+            <h3 class="text-[20px] font-geist font-[600] text-white mb-2 leading-snug">
+              {{ diploma.title }}
+            </h3>
+            @if (diploma.description) {
+              <p
+                class="text-[14px] font-[400] text-white/90 leading-relaxed font-geist line-clamp-3 group-hover:line-clamp-6"
+              >
+                {{ diploma.description }}
+              </p>
+            }
+          </div>
+        </button>
+      }
+    </div>
+
+    @if (isLoadingMore()) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+        @for (item of skeletonItems.slice(0, 3); track $index) {
+          <div class="p-4 rounded-lg bg-white border border-[#E5E7EB]">
+            <p-skeleton width="100%" height="240px" />
+            <div class="mt-4 flex flex-col gap-2">
+              <p-skeleton width="70%" height="1.5rem" />
+              <p-skeleton width="100%" height="1rem" />
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (hasMore() && !isLoadingMore()) {
+      <div
+        (click)="loadMore()"
+        class="flex flex-col items-center mt-8 text-[#9CA3AF] text-[12px] cursor-pointer hover:text-primary transition-colors"
+      >
+        <span>Scroll or click to view more</span>
+        <svg
+          class="w-3.5 h-3.5 mt-1 animate-bounce"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+    } @else if (!hasMore() && diplomas().length > 0) {
+      <p class="text-center text-[12px] font-geist text-[#9CA3AF] mt-8 mb-2">End of list</p>
+    }
+  }
+</div>

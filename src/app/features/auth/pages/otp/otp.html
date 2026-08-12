@@ -1,0 +1,56 @@
+<div class="flex items-center w-full h-screen overflow-y-auto justify-center bg-white p-6 sm:p-8 lg:p-12">
+  <div class="auth-form flex flex-col gap-6">
+    <app-shared-steps [totalSteps]="4" [currentStep]="1" />
+
+    <app-auth-header title="Create Account" subtitle="Verify OTP" />
+
+    <p class="text-[14px] text-slate-500 font-geist leading-relaxed -mt-4">
+      Please enter the 6-digits code we have sent to: <br />
+      <span class="text-slate-800 font-[500]">{{ email }}</span>
+      <a
+        routerLink="/auth/register"
+        class="text-primary font-[500] hover:underline ml-1 cursor-pointer"
+        >Edit</a
+      >
+    </p>
+
+    <form [formGroup]="otpForm" (ngSubmit)="onVerify()" class="flex flex-col gap-6">
+      <app-shared-otp
+        [length]="6"
+        formControlName="code"
+        [hasError]="!!(otpControl.touched && otpControl.invalid)"
+      />
+
+      @if (otpControl.touched && otpControl.invalid) {
+        <p class="text-[13px] text-[#ef4444] font-geist text-center -mt-3">
+          Please enter the 6-digit code
+        </p>
+      }
+
+      <div class="text-[13px] text-center text-slate-500 font-geist">
+        @if (timerCount > 0) {
+          <span>You can request another code in: <span class="font-[600] text-slate-700">{{ timerCount }}s</span></span>
+        } @else {
+          <button
+            type="button"
+            (click)="onResendCode()"
+            [disabled]="resendLoading"
+            class="text-primary font-[600] hover:underline cursor-pointer disabled:opacity-50"
+          >
+            {{ resendLoading ? 'Resending...' : 'Resend Code' }}
+          </button>
+        }
+      </div>
+
+      <app-auth-error-banner [message]="errorMessage" />
+
+      <app-shared-button
+        label="Verify Code"
+        type="submit"
+        [loading]="loading"
+        [disabled]="loading"
+        bgClass="bg-[#EFF6FF]! text-primary! border border-[#BFDBFE]! hover:bg-[#DBEAFE]!"
+      />
+    </form>
+  </div>
+</div>

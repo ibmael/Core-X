@@ -1,23 +1,15 @@
-<div class="shared-steps flex items-center w-full mb-6 select-none">
+<div class="shared-steps flex items-center w-full select-none" aria-hidden="true">
   @for (index of stepsArray; track index; let last = $last) {
-    <div class="shared-steps__marker shrink-0 flex items-center justify-center z-10">
-      @if (index < currentStep) {
+    <div class="shared-steps__marker shrink-0 flex items-center justify-center">
+      @if (index <= currentStep) {
         <span class="shared-steps__diamond shared-steps__diamond--filled"></span>
-      } @else if (index === currentStep) {
-        <span class="shared-steps__halo">
-          <span class="shared-steps__diamond shared-steps__diamond--filled"></span>
-        </span>
       } @else {
         <span class="shared-steps__diamond shared-steps__diamond--outlined"></span>
       }
     </div>
 
     @if (!last) {
-      <div
-        class="shared-steps__line flex-1"
-        [class.shared-steps__line--solid]="index < currentStep"
-        [class.shared-steps__line--dashed]="index >= currentStep"
-      ></div>
+      <div class="shared-steps__line flex-1"></div>
     }
   }
 </div>

@@ -1,0 +1,121 @@
+<div class="max-w-[1100px] mx-auto">
+  <p-breadcrumb [model]="breadcrumbItems()" styleClass="!bg-transparent !p-0 !border-0 mb-4 font-geist text-[12px]" />
+
+  <div class="flex items-stretch gap-3.5 mb-6">
+    <button
+      type="button"
+      class="w-11 bg-white border border-[#BFDBFE] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shrink-0 shadow-xs self-stretch"
+      (click)="goBack()"
+      aria-label="Back to diplomas"
+    >
+      <img src="./icons/chevron-left.svg" alt="Back" class="w-4 h-4" />
+    </button>
+    <div class="flex-1 flex items-center gap-2.5 bg-primary text-white px-5 py-3.5 shadow-sm min-w-0">
+      <img src="./icons/book-open-check.svg" alt="Exams" class="w-5 h-5 shrink-0 brightness-0 invert" />
+      <h1 class="text-[20px] sm:text-[22px] font-[700] truncate">
+        {{ diplomaTitle() }} Exams
+      </h1>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex flex-col gap-4">
+      @for (item of skeletonItems; track $index) {
+        <div class="p-4 rounded-lg bg-white border border-[#BFDBFE] flex items-center gap-4">
+          <p-skeleton width="100px" height="100px" />
+          <div class="flex-1 flex flex-col gap-2">
+            <p-skeleton width="40%" height="1.5rem" />
+            <p-skeleton width="90%" height="1rem" />
+            <p-skeleton width="70%" height="1rem" />
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!isLoading() && error()) {
+    <div class="flex flex-col items-center py-16 text-center gap-3">
+      <img src="./icons/triangle-alert.svg" alt="Error" class="w-10 h-10" />
+      <p class="text-[#374151] font-semibold">{{ error() }}</p>
+      <button
+        type="button"
+        (click)="loadData(diplomaId())"
+        class="px-4 py-2 bg-primary text-white font-geist text-[13px] font-[600] cursor-pointer hover:bg-[#1248cc]"
+      >
+        Try Again
+      </button>
+    </div>
+  }
+
+  @if (!isLoading() && !error() && exams().length === 0) {
+    <div class="flex flex-col items-center py-16 text-center gap-3">
+      <img src="./icons/circle-question-mark.svg" alt="No Exams" class="w-12 h-12 opacity-40" />
+      <p class="text-[#6B7280]">No exams available for this diploma yet.</p>
+    </div>
+  }
+
+  @if (!isLoading() && !error() && exams().length > 0) {
+    <div class="flex flex-col gap-4">
+      @for (exam of exams(); track exam.id; let i = $index) {
+        <div
+          class="group flex flex-col sm:flex-row items-start gap-4 bg-[#EFF6FF] border border-dashed border-[#BFDBFE] hover:border-primary p-5 transition-all cursor-pointer"
+          (click)="startExam(exam)"
+        >
+          <div
+            class="w-24 h-24 sm:w-28 sm:h-28 bg-white flex items-center justify-center p-2 shadow-xs shrink-0 overflow-hidden"
+          >
+            <img
+              [src]="exam.image || getExamLogo(i)"
+              [alt]="exam.title"
+              class="w-full h-full object-contain"
+              (error)="onLogoError($event, i)"
+            />
+          </div>
+
+          <div class="flex-1 min-w-0 w-full">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+              <h3 class="text-[18px] sm:text-[20px] font-geist font-[700] text-primary">
+                {{ exam.title }}
+              </h3>
+
+              <div class="flex items-center gap-3 text-[12px] text-[#4B5563] font-geist shrink-0">
+                <span class="inline-flex items-center gap-1">
+                  <img src="./icons/circle-question-mark.svg" alt="" class="w-3.5 h-3.5" />
+                  {{ exam.questionsCount ?? 0 }} Questions
+                </span>
+                <span class="text-[#D1D5DB]">|</span>
+                <span class="inline-flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9" stroke-width="2" />
+                    <path stroke-width="2" stroke-linecap="round" d="M12 7v5l3 3" />
+                  </svg>
+                  {{ exam.duration ?? 0 }} minutes
+                </span>
+              </div>
+            </div>
+
+            <p class="text-[12px] text-[#4B5563] leading-relaxed font-geist">
+              {{ exam.description }}
+              <button type="button" class="font-[700] text-primary ml-1 cursor-pointer">
+                See More
+              </button>
+            </p>
+
+            <div class="flex justify-end mt-3">
+              <button
+                type="button"
+                (click)="startExam(exam); $event.stopPropagation()"
+                class="px-5 py-2 bg-primary text-white font-geist text-[13px] font-[700] flex items-center gap-2 cursor-pointer hover:bg-[#1248cc] transition-colors"
+              >
+                <span>START</span>
+                <img src="./icons/VectorArrow.svg" alt="" class="w-3.5 h-3.5 shrink-0 brightness-0 invert" />
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <p class="text-center text-[12px] font-geist text-[#9CA3AF] mt-8 mb-2">End of list</p>
+  }
+</div>

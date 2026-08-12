@@ -1,5 +1,11 @@
 :host {
   display: block;
-  width: 100%;
+  min-width: 0;
   max-width: 100%;
+}
+
+/* When used in a side-by-side row (class="flex-1" on host) */
+:host(.flex-1) {
+  flex: 1 1 0%;
+  width: auto;
 }

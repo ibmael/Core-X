@@ -1,1 +1,37 @@
 /* Shared OTP styles */
+:host ::ng-deep p-inputotp input,
+:host ::ng-deep .p-inputotp-input {
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+:host ::ng-deep p-inputotp.otp-normal input:focus,
+:host ::ng-deep p-inputotp.otp-normal .p-inputotp-input:focus {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #155dfc !important;
+  box-shadow: 0 0 0 1px #155dfc !important;
+}
+
+:host ::ng-deep p-inputotp.otp-error input,
+:host ::ng-deep p-inputotp.otp-error .p-inputotp-input {
+  border-color: #f87171 !important;
+}
+
+:host ::ng-deep p-inputotp.otp-error input:focus,
+:host ::ng-deep p-inputotp.otp-error .p-inputotp-input:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #fca5a5 !important;
+}

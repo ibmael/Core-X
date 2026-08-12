@@ -46,12 +46,18 @@ export function matchValidator(controlName: string, matchControlName: string): V
 
     if (!control || !matchControl) return null;
 
-    if (matchControl.errors && !matchControl.errors['mismatch']) return null;
+    const otherErrors = { ...(matchControl.errors || {}) };
+    delete otherErrors['mismatch'];
+
+    // Don't overwrite unrelated errors (e.g. required) while the field is empty.
+    if (Object.keys(otherErrors).length > 0 && !matchControl.value) {
+      return null;
+    }
 
     if (control.value !== matchControl.value) {
-      matchControl.setErrors({ mismatch: true });
+      matchControl.setErrors({ ...otherErrors, mismatch: true });
     } else {
-      matchControl.setErrors(null);
+      matchControl.setErrors(Object.keys(otherErrors).length ? otherErrors : null);
     }
 
     return null;

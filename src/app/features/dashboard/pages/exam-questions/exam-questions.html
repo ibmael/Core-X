@@ -1,0 +1,290 @@
+<div class="max-w-[1100px] mx-auto">
+  <p-breadcrumb [model]="breadcrumbItems()" styleClass="!bg-transparent !p-0 !border-0 mb-4 font-geist text-[12px]" />
+
+  <div class="flex items-stretch gap-3.5 mb-6">
+    <button
+      type="button"
+      class="w-11 bg-white border border-[#BFDBFE] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shrink-0 shadow-xs self-stretch"
+      (click)="goBack()"
+      aria-label="Back"
+    >
+      <img src="./icons/chevron-left.svg" alt="Back" class="w-4 h-4" />
+    </button>
+    <div
+      class="flex-1 flex items-center gap-2.5 bg-primary text-white px-5 py-3.5 shadow-sm min-w-0"
+    >
+      <img
+        src="./icons/circle-question-mark.svg"
+        alt="Questions"
+        class="w-5 h-5 shrink-0 brightness-0 invert"
+      />
+      <h1 class="text-[20px] sm:text-[22px] font-[700] truncate">{{ examTitle() }} Questions</h1>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="bg-white border border-[#E5E7EB] p-7 space-y-4">
+      <p-skeleton width="40%" height="1.5rem" />
+      <p-skeleton width="100%" height="2.5rem" />
+      <p-skeleton width="100%" height="2.5rem" />
+    </div>
+  }
+
+  @if (!isLoading() && error()) {
+    <div class="flex flex-col items-center py-16 text-center gap-3">
+      <img src="./icons/triangle-alert.svg" alt="Error" class="w-10 h-10" />
+      <p class="text-[#374151] font-semibold">{{ error() }}</p>
+      <button
+        type="button"
+        (click)="loadExamAndQuestions(examId())"
+        class="px-4 py-2 bg-primary text-white font-geist text-[13px] font-[600] cursor-pointer hover:bg-[#1248cc]"
+      >
+        Try Again
+      </button>
+    </div>
+  }
+
+  @if (!isLoading() && !error() && !submission() && currentQuestion(); as q) {
+    <div class="bg-white border border-[#E5E7EB] p-6 sm:p-8 shadow-xs">
+      <div class="flex items-start gap-4 mb-8">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between mb-2 gap-3 font-geist">
+            <span class="text-[12px] text-[#6B7280] truncate"
+              >{{ diplomaTitle() }} - {{ examTitle() }}</span
+            >
+            <span class="text-[12px] text-[#374151] shrink-0">
+              Question
+              <strong class="text-primary">{{ currentQuestionIndex() + 1 }}</strong>
+              of
+              <strong>{{ questions().length }}</strong>
+            </span>
+          </div>
+          <p-progressbar [value]="progressPercent()" [showValue]="false" styleClass="!h-2" />
+        </div>
+
+        <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+          <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+            <circle cx="28" cy="28" r="22" fill="none" stroke="#E5E7EB" stroke-width="4" />
+            <circle
+              cx="28"
+              cy="28"
+              r="22"
+              fill="none"
+              stroke="#155DFC"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-dasharray="138.23"
+              [attr.stroke-dashoffset]="timerOffset()"
+              transform="rotate(-90 28 28)"
+            />
+          </svg>
+          <span class="absolute text-[11px] font-[700] text-primary font-geist">{{
+            formattedTime()
+          }}</span>
+        </div>
+      </div>
+
+      <h2 class="text-[18px] sm:text-[20px] font-[700] font-geist text-primary mb-6">
+        {{ q.text }}
+      </h2>
+
+      <div class="flex flex-col gap-3 mb-8">
+        @for (ans of q.answers; track ans.id) {
+          <button
+            type="button"
+            class="flex items-center gap-4 p-3.5 px-5 cursor-pointer border text-left transition-all w-full"
+            [class]="
+              isSelected(ans.id)
+                ? 'bg-[#EFF6FF] border-[#BFDBFE]'
+                : 'bg-[#F9FAFB] border-[#F3F4F6] hover:bg-[#F3F4F6]'
+            "
+            (click)="selectOption(ans.id)"
+          >
+            <span
+              class="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0"
+              [class]="isSelected(ans.id) ? 'border-primary' : 'border-[#D1D5DB]'"
+            >
+              @if (isSelected(ans.id)) {
+                <span class="w-2 h-2 rounded-full bg-primary"></span>
+              }
+            </span>
+            <span class="text-[13px] text-[#374151] font-geist">{{ ans.text }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <button
+          type="button"
+          (click)="previousQuestion()"
+          [disabled]="currentQuestionIndex() === 0"
+          class="w-full py-3 bg-[#E5E7EB] text-[#374151] font-geist font-[700] text-[13px] flex items-center justify-center gap-2 hover:bg-[#D1D5DB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          <img src="./icons/chevron-left.svg" alt="" class="w-3.5 h-3.5 shrink-0 opacity-70" />
+          <span>Previous</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="nextQuestion()"
+          [disabled]="isSubmitting()"
+          class="w-full py-3 bg-primary text-white font-geist font-[700] text-[13px] flex items-center justify-center gap-2 hover:bg-[#1248cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          <span>{{
+            isSubmitting()
+              ? 'Submitting…'
+              : currentQuestionIndex() === questions().length - 1
+                ? 'Submit Exam'
+                : 'Next'
+          }}</span>
+          @if (currentQuestionIndex() !== questions().length - 1) {
+            <img
+              src="./icons/VectorArrow.svg"
+              alt=""
+              class="w-3.5 h-3.5 shrink-0 brightness-0 invert"
+            />
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading() && submission(); as sub) {
+    <div class="bg-white border border-[#E5E7EB] p-6 sm:p-8 shadow-xs">
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2 gap-3 font-geist">
+          <span class="text-[12px] text-[#6B7280]">{{ diplomaTitle() }} - {{ examTitle() }}</span>
+          <span class="text-[12px] text-[#374151]">
+            Question <strong>{{ questions().length }}</strong> of
+            <strong>{{ questions().length }}</strong>
+          </span>
+        </div>
+        <p-progressbar [value]="100" [showValue]="false" styleClass="!h-2" />
+      </div>
+
+      <h2 class="text-[20px] font-[700] font-geist text-primary mb-6">Results:</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-5">
+        <div
+          class="bg-[#EFF6FF] border border-solid border-[#BFDBFE] p-6 flex flex-col items-center justify-center"
+        >
+          <div class="relative mb-5 flex items-center justify-center">
+            <svg width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+              <circle cx="75" cy="75" r="52" fill="none" stroke="#E5E7EB" stroke-width="16" />
+
+              @if (sub.correctAnswers > 0) {
+                <circle
+                  cx="75"
+                  cy="75"
+                  r="52"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="16"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="CIRCUMFERENCE"
+                  [attr.stroke-dashoffset]="getGreenStrokeDashoffset(sub)"
+                  transform="rotate(-90 75 75)"
+                />
+              }
+
+              @if (sub.wrongAnswers > 0) {
+                <circle
+                  cx="75"
+                  cy="75"
+                  r="52"
+                  fill="none"
+                  stroke="#EF4444"
+                  stroke-width="16"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="CIRCUMFERENCE"
+                  [attr.stroke-dashoffset]="getRedStrokeDashoffset(sub)"
+                  [attr.transform]="getRedRotationAngle(sub)"
+                />
+              }
+            </svg>
+          </div>
+          <div class="flex flex-col gap-2 text-[13px] text-[#374151] font-geist">
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 bg-[#10B981]"></span>
+              Correct: <strong>{{ sub.correctAnswers }}</strong>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 bg-[#EF4444]"></span>
+              Incorrect: <strong>{{ sub.wrongAnswers }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white border border-dashed border-[#BFDBFE] p-5 max-h-[420px] overflow-y-auto"
+        >
+          @for (item of analytics(); track item.questionId) {
+            <div class="mb-5 last:mb-0">
+              <h4 class="text-[15px] font-[700] font-geist text-primary mb-2.5">
+                {{ item.questionText }}
+              </h4>
+              <div class="flex flex-col gap-2">
+                @if (!item.isCorrect) {
+                  <div
+                    class="flex items-center gap-3 p-3 px-4 text-[12px] font-geist bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]"
+                  >
+                    <span
+                      class="w-4 h-4 rounded-full border-2 border-[#EF4444] flex items-center justify-center shrink-0"
+                    >
+                      <span class="w-2 h-2 rounded-full bg-[#EF4444]"></span>
+                    </span>
+                    <span>{{ item.selectedAnswer?.text || 'No answer selected' }}</span>
+                  </div>
+
+                  @if (item.correctAnswer?.text) {
+                    <div
+                      class="flex items-center gap-3 p-3 px-4 text-[12px] font-geist bg-[#ECFDF5] text-[#059669] border border-[#D1FAE5]"
+                    >
+                      <span
+                        class="w-4 h-4 rounded-full border-2 border-[#10B981] flex items-center justify-center shrink-0"
+                      >
+                        <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                      </span>
+                      <span>{{ item.correctAnswer.text }}</span>
+                    </div>
+                  }
+                } @else {
+                  <div
+                    class="flex items-center gap-3 p-3 px-4 text-[12px] font-geist bg-[#ECFDF5] text-[#059669] border border-[#D1FAE5]"
+                  >
+                    <span
+                      class="w-4 h-4 rounded-full border-2 border-[#10B981] flex items-center justify-center shrink-0"
+                    >
+                      <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                    </span>
+                    <span>{{ item.selectedAnswer?.text || item.correctAnswer?.text }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-8">
+        <button
+          type="button"
+          (click)="restartExam()"
+          class="w-full py-3 bg-[#E5E7EB] text-[#374151] font-geist font-[700] text-[13px] flex items-center justify-center gap-2 hover:bg-[#D1D5DB] transition-colors cursor-pointer"
+        >
+          <img src="./icons/rotate-ccw.svg" alt="" class="w-4 h-4 shrink-0" />
+          <span>Restart</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="goBack()"
+          class="w-full py-3 bg-primary text-white font-geist font-[700] text-[13px] flex items-center justify-center gap-2 hover:bg-[#1248cc] transition-colors cursor-pointer"
+        >
+          <img src="./icons/VectorExplor.svg" alt="" class="w-4 h-4 shrink-0 brightness-0 invert" />
+          <span>Explore</span>
+        </button>
+      </div>
+    </div>
+  }
+</div>

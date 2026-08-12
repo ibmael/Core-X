@@ -1,0 +1,24 @@
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { CanActivateFn, Router } from '@angular/router';
+
+import { AuthService } from '../services/auth.service';
+
+export const guestGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
+
+  // On Server (SSR), localStorage is unavailable. Pass guard on server
+  // and let client-side hydration perform the guest check.
+  if (!isPlatformBrowser(platformId)) {
+    return true;
+  }
+
+  if (!authService.isAuthenticated()) {
+    return true;
+  }
+
+  // Redirect authenticated users to the dashboard.
+  return router.createUrlTree(['/dashboard']);
+};
